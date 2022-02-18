@@ -13,10 +13,15 @@ class BackofficeInvoiceController {
     
     const stream = fs.createReadStream(filePath);
 
-    res.writeHead(200, {
-      'Content-disposition': 'attachment; filename="' + encodeURIComponent(path.basename(filePath))  + '"',
-      'Content-type': 'application/pdf',
-    });
+    // res.writeHead(200, {
+    //   'Content-type': 'application/pdf',
+    //   'Content-disposition': 'attachment; filename="' + encodeURIComponent(path.basename(filePath))  + '"',
+    // });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(path.basename(filePath))}`);
+
+    // res.send(data)
 
     stream.pipe(res);
   };
