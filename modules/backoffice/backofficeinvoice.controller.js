@@ -9,21 +9,16 @@ class BackofficeInvoiceController {
   };
 
   async getOrderInvoice(req, res) {
-    let filePath = await BackofficeInvoiceService.getInvoiceForOrder(3);
+    let { path_to_fv, memoryBlock } = await BackofficeInvoiceService.getInvoiceForOrder();
     
-    const stream = fs.createReadStream(filePath);
-
-    // res.writeHead(200, {
-    //   'Content-type': 'application/pdf',
-    //   'Content-disposition': 'attachment; filename="' + encodeURIComponent(path.basename(filePath))  + '"',
-    // });
-
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(path.basename(filePath))}`);
-
-    // res.send(data)
-
-    stream.pipe(res);
+    memoryBlock.on('finish', async () => {
+      const stream = fs.createReadStream(path_to_fv);
+   
+      res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(path.basename(path_to_fv))}`);
+      res.setHeader('Content-Type', 'application/pdf');
+       
+      stream.pipe(res);
+    });
   };
 };
 

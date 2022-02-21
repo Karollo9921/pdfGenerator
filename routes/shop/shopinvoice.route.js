@@ -9,7 +9,7 @@ class ShopInvoiceRoutes {
   };
 
   #initializeRoutes() {
-    this.router.route('/order-invoice/:id').get(shopInvoiceController.getOrderInvoice);
+    this.router.get('/order-invoice', shopInvoiceController.getOrderInvoice);
   };
 };
 
