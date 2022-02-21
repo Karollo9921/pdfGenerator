@@ -9,16 +9,10 @@ class BackofficeInvoiceController {
   };
 
   async getOrderInvoice(req, res) {
-    let { path_to_fv, memoryBlock } = await BackofficeInvoiceService.getInvoiceForOrder();
-    
-    memoryBlock.on('finish', async () => {
-      const stream = fs.createReadStream(path_to_fv);
-   
-      res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(path.basename(path_to_fv))}`);
-      res.setHeader('Content-Type', 'application/pdf');
-       
-      stream.pipe(res);
-    });
+    let { path_to_fv, buffer } = await BackofficeInvoiceService.getInvoiceForOrder();
+    // res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(path.basename(path_to_fv))}`);
+    res.contentType('application/pdf').send(buffer);
   };
 };
 

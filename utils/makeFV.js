@@ -314,11 +314,11 @@ function generatePDF(data, pathWithPDF) {
       const pdfDoc = printer.createPdfKitDocument(docDefinition, options);
       const path_to_fv = path.join(pathWithPDF, "invoices", `Fv_${invoice_prefix}_${invoice_number}_${invoice_month}_${invoice_year}.pdf`);
       // 5. Read to write
-      let memoryBlock;
-      pdfDoc.pipe(memoryBlock = fs.createWriteStream(path_to_fv));
-      // 6. End
+      var chunks = [];
+      pdfDoc.on('data', chunk => chunks.push(chunk));
+      pdfDoc.on('end', () => resolve({ buffer: Buffer.concat(chunks), path_to_fv }));
       pdfDoc.end();
-      resolve({ path_to_fv, memoryBlock });
+      // resolve(path_to_fv);
     });
   })
 };
